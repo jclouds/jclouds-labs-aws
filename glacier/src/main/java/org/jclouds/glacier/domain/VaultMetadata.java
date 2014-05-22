@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.beans.ConstructorProperties;
 import java.util.Date;
 
+import org.jclouds.javax.annotation.Nullable;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 import com.google.gson.annotations.SerializedName;
@@ -47,12 +49,12 @@ public class VaultMetadata implements Comparable<VaultMetadata> {
 
    @ConstructorProperties({ "VaultName", "VaultARN", "CreationDate", "LastInventoryDate", "NumberOfArchives",
          "SizeInBytes" })
-   public VaultMetadata(String vaultName, String vaultARN, Date creationDate, Date lastInventoryDate,
+   public VaultMetadata(String vaultName, String vaultARN, Date creationDate, @Nullable Date lastInventoryDate,
          long numberOfArchives, long sizeInBytes) {
       this.vaultName = checkNotNull(vaultName);
       this.vaultARN = checkNotNull(vaultARN);
       this.creationDate = checkNotNull(creationDate);
-      this.lastInventoryDate = checkNotNull(lastInventoryDate);
+      this.lastInventoryDate = lastInventoryDate;
       this.numberOfArchives = checkNotNull(numberOfArchives);
       this.sizeInBytes = checkNotNull(sizeInBytes);
    }

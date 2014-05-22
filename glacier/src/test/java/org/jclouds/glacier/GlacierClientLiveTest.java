@@ -20,8 +20,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Iterator;
+import java.util.UUID;
 
-import org.jclouds.ContextBuilder;
+import org.jclouds.apis.BaseApiLiveTest;
 import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
 import org.testng.annotations.Test;
@@ -31,51 +32,57 @@ import org.testng.annotations.Test;
 * @author Roman Coedo
 */
 @Test(groups = { "integration", "live" })
-public class GlacierClientLiveTest {
+public class GlacierClientLiveTest extends BaseApiLiveTest<GlacierClient>{
 
-   static GlacierClient getGlacierClient() {
-      return ContextBuilder.newBuilder("glacier").credentials("ADDME", "ADDME").buildApi(GlacierClient.class);
+   public GlacierClientLiveTest() {
+      this.provider = "glacier";
    }
+
+   private static final String VAULT_NAME1 = "testV1";
+   private static final String VAULT_NAME2 = "testV2";
+   private static final String VAULT_NAME3 = "testV3";
 
    @Test(groups = { "integration", "live" })
    public void testDeleteVaultIfEmptyOrNotFound() throws Exception {
-      assertTrue(getGlacierClient().deleteVaultIfEmpty("testDeleteVault"));
+      assertTrue(api.deleteVaultIfEmpty(UUID.randomUUID().toString()));
    }
 
    @Test(groups = { "integration", "live" })
-   public void testCreateVault() throws Exception {
-      GlacierClient client = getGlacierClient();
-      String path = client.createVault("testCreateVault").toString();
-      assertTrue(path.contains("https://glacier.us-east-1.amazonaws.com/"));
-      assertTrue(path.contains("/vaults/testCreateVault"));
-      client.deleteVaultIfEmpty("testCreateVault");
+   public void testDescribeNonExistentVault() throws Exception {
+      VaultMetadata vault = api.describeVault(UUID.randomUUID().toString());
+      assertEquals(vault, null);
    }
 
-   @Test(groups = { "integration", "live" })
-   public void testDescribeVault() throws Exception {
-      GlacierClient client = getGlacierClient();
-      client.createVault("testDescribeVault");
-      VaultMetadata vault = getGlacierClient().describeVault("testDescribeVault");
-      assertEquals(vault.getVaultName(), "testDescribeVault");
+   private void testDescribeVault() throws Exception {
+      VaultMetadata vault = api.describeVault(VAULT_NAME1);
+      assertEquals(vault.getVaultName(), VAULT_NAME1);
       assertEquals(vault.getNumberOfArchives(), 0);
       assertEquals(vault.getSizeInBytes(), 0);
       assertEquals(vault.getLastInventoryDate(), null);
-      client.deleteVaultIfEmpty("testDescribeVault");
+   }
+
+   private void testListVaults() throws Exception {
+      PaginatedVaultCollection vaults = api.listVaults();
+      Iterator<VaultMetadata> i = vaults.iterator();
+      assertEquals(i.next().getVaultName(), VAULT_NAME1);
+      assertEquals(i.next().getVaultName(), VAULT_NAME2);
+      assertEquals(i.next().getVaultName(), VAULT_NAME3);
    }
 
    @Test(groups = { "integration", "live" })
-   public void testListVaults() throws Exception {
-      GlacierClient client = getGlacierClient();
-      client.createVault("testListVaults1");
-      client.createVault("testListVaults2");
-      client.createVault("testListVaults3");
-      PaginatedVaultCollection vaults = getGlacierClient().listVaults();
-      Iterator<VaultMetadata> i = vaults.iterator();
-      assertEquals(i.next().getVaultName(), "testListVaults1");
-      assertEquals(i.next().getVaultName(), "testListVaults2");
-      assertEquals(i.next().getVaultName(), "testListVaults3");
-      client.deleteVaultIfEmpty("testListVaults1");
-      client.deleteVaultIfEmpty("testListVaults2");
-      client.deleteVaultIfEmpty("testListVaults3");
+   public void testCreateDescribeAndListVault() throws Exception {
+      try {
+         String path = api.createVault(VAULT_NAME1).toString();
+         api.createVault(VAULT_NAME2);
+         api.createVault(VAULT_NAME3);
+         assertTrue(path.contains("https://glacier.us-east-1.amazonaws.com/"));
+         assertTrue(path.contains("/vaults/" + VAULT_NAME1));
+         this.testDescribeVault();
+         this.testListVaults();
+      } finally {
+         api.deleteVaultIfEmpty(VAULT_NAME1);
+         api.deleteVaultIfEmpty(VAULT_NAME2);
+         api.deleteVaultIfEmpty(VAULT_NAME3);
+      }
    }
 }
