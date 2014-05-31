@@ -32,7 +32,7 @@ import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.blobstore.attr.BlobScope;
 import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
-import org.jclouds.glacier.fallbacks.FalseIfVaultNotEmpty;
+import org.jclouds.glacier.fallbacks.FalseOnIllegalArgumentException;
 import org.jclouds.glacier.filters.RequestAuthorizeSignature;
 import org.jclouds.glacier.functions.ParseVaultMetadataFromHttpContent;
 import org.jclouds.glacier.functions.ParseVaultMetadataListFromHttpContent;
@@ -72,7 +72,7 @@ public interface GlacierAsyncClient extends Closeable {
    @Named("DeleteVault")
    @DELETE
    @Path("/-/vaults/{vault}")
-   @Fallback(FalseIfVaultNotEmpty.class)
+   @Fallback(FalseOnIllegalArgumentException.class)
    ListenableFuture<Boolean> deleteVault(@PathParam("vault") String vaultName);
 
    /**
