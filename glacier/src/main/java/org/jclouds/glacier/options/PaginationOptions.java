@@ -16,7 +16,6 @@
  */
 package org.jclouds.glacier.options;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.jclouds.http.options.BaseHttpRequestOptions;
@@ -29,17 +28,12 @@ import org.jclouds.http.options.BaseHttpRequestOptions;
  */
 public class PaginationOptions extends BaseHttpRequestOptions {
 
-   private static final int MIN_LIMIT = 1;
-   private static final int MAX_LIMIT = 1000;
-
    public PaginationOptions marker(String marker) {
       queryParameters.put("marker", checkNotNull(marker, "marker"));
       return this;
    }
 
    public PaginationOptions limit(int limit) {
-      checkArgument(limit >= MIN_LIMIT, "limit must be >= " + MIN_LIMIT + " but was " + limit);
-      checkArgument(limit <= MAX_LIMIT, "limit must be <= " + MAX_LIMIT + " but was " + limit);
       queryParameters.put("limit", Integer.toString(limit));
       return this;
    }
