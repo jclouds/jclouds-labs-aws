@@ -37,11 +37,9 @@ import org.jclouds.glacier.filters.RequestAuthorizeSignature;
 import org.jclouds.glacier.functions.ParseVaultMetadataFromHttpContent;
 import org.jclouds.glacier.functions.ParseVaultMetadataListFromHttpContent;
 import org.jclouds.glacier.options.PaginationOptions;
-import org.jclouds.glacier.predicates.validators.VaultNameValidator;
 import org.jclouds.glacier.reference.GlacierHeaders;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.Headers;
-import org.jclouds.rest.annotations.ParamValidators;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
 
@@ -65,7 +63,7 @@ public interface GlacierAsyncClient extends Closeable {
    @Named("CreateVault")
    @PUT
    @Path("/-/vaults/{vault}")
-   ListenableFuture<URI> createVault(@PathParam("vault") @ParamValidators(VaultNameValidator.class) String vaultName);
+   ListenableFuture<URI> createVault(@PathParam("vault") String vaultName);
 
    /**
     * @see GlacierClient#deleteVaultIfEmpty
@@ -85,7 +83,7 @@ public interface GlacierAsyncClient extends Closeable {
    @ResponseParser(ParseVaultMetadataFromHttpContent.class)
    @Fallback(NullOnNotFoundOr404.class)
    ListenableFuture<VaultMetadata> describeVault(
-         @PathParam("vault") @ParamValidators(VaultNameValidator.class) String vaultName);
+         @PathParam("vault") String vaultName);
 
    /**
     * @see GlacierClient#listVaults(PaginationOptions)
