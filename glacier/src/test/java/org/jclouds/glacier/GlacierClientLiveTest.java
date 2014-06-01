@@ -16,6 +16,7 @@
  */
 package org.jclouds.glacier;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -68,7 +69,13 @@ public class GlacierClientLiveTest extends BaseApiLiveTest<GlacierClient>{
       assertTrue(vaults.contains(api.describeVault(VAULT_NAME3)));
    }
 
-   @Test(groups = { "integration", "live" }, dependsOnMethods = { "testListAndDescribeVaults" })
+   @Test(groups = { "integration", "live" }, dependsOnMethods = { "testCreateVault" })
+   public void testListMultipartUploadsWithEmptyList() throws Exception {
+      assertEquals(api.listMultipartUploads(VAULT_NAME1).size(), 0);
+   }
+
+   @Test(groups = { "integration", "live" },
+         dependsOnMethods = { "testListAndDescribeVaults", "testListMultipartUploadsWithEmptyList" })
    public void testDeleteVault() throws Exception {
       assertTrue(api.deleteVault(VAULT_NAME1));
       assertTrue(api.deleteVault(VAULT_NAME2));
