@@ -25,6 +25,10 @@ public final class GlacierHeaders {
    public static final String HEADER_PREFIX = "x-" + DEFAULT_AMAZON_HEADERTAG + "-";
    public static final String VERSION = HEADER_PREFIX + "glacier-version";
    public static final String ALTERNATE_DATE = HEADER_PREFIX + "date";
+   public static final String ARCHIVE_DESCRIPTION = HEADER_PREFIX + "archive-description";
+   public static final String LINEAR_HASH = HEADER_PREFIX + "content-sha256";
+   public static final String TREE_HASH = HEADER_PREFIX + "sha256-tree-hash";
+   public static final String ARCHIVE_ID = HEADER_PREFIX + "archive-id";
 
    private GlacierHeaders() {
    }
