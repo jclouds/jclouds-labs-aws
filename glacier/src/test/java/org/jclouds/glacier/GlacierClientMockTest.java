@@ -19,6 +19,7 @@ package org.jclouds.glacier;
 import static com.google.common.util.concurrent.MoreExecutors.sameThreadExecutor;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
 import static org.jclouds.Constants.PROPERTY_SO_TIMEOUT;
+import static org.jclouds.glacier.util.TestUtils.MiB;
 import static org.jclouds.glacier.util.TestUtils.buildPayload;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -38,6 +39,7 @@ import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
 import org.jclouds.glacier.options.PaginationOptions;
 import org.jclouds.glacier.reference.GlacierHeaders;
+import org.jclouds.glacier.util.ContentRange;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -265,6 +267,66 @@ public class GlacierClientMockTest {
          RecordedRequest request = server.takeRequest();
          assertEquals(request.getRequestLine(), "DELETE /-/vaults/examplevault/archives/" + id + " HTTP/1.1");
          assertTrue(result);
+      } finally {
+         server.shutdown();
+      }
+   }
+
+   public void testInitiateMultipartUpload() throws IOException, InterruptedException {
+      // Prepare the response
+      MockResponse mr = new MockResponse();
+      mr.setResponseCode(201);
+      mr.addHeader(GlacierHeaders.REQUEST_ID, "AAABZpJrTyioDC_HsOmHae8EZp_uBSJr6cnGOLKp_XJCl-Q");
+      mr.addHeader(HttpHeaders.DATE, "Sun, 25 Mar 2012 12:00:00 GMT");
+      mr.addHeader(
+            HttpHeaders.LOCATION,
+            "/111122223333/vaults/examplevault/multipart-uploads/OW2fM5iVylEpFEMM9_HpKowRapC3vn5sSL39_396UW9zLFUWVrnRHaPjUJddQ5OxSHVXjYtrN47NBZ-khxOjyEXAMPLE");
+      mr.addHeader(GlacierHeaders.MULTIPART_UPLOAD_ID,
+            "OW2fM5iVylEpFEMM9_HpKowRapC3vn5sSL39_396UW9zLFUWVrnRHaPjUJddQ5OxSHVXjYtrN47NBZ-khxOjyEXAMPLE");
+      MockWebServer server = new MockWebServer();
+      server.enqueue(mr);
+      server.play();
+
+      // Send the request and check the response
+      try {
+         int partSizeInMB = 4;
+         GlacierClient client = getGlacierClient(server.getUrl("/"));
+         String multipartId = client.initiateMultipartUpload("examplevault", partSizeInMB, "MyArchive-101");
+         RecordedRequest request = server.takeRequest();
+         assertEquals(request.getRequestLine(), "POST /-/vaults/examplevault/multipart-uploads HTTP/1.1");
+         assertEquals(multipartId,
+               "OW2fM5iVylEpFEMM9_HpKowRapC3vn5sSL39_396UW9zLFUWVrnRHaPjUJddQ5OxSHVXjYtrN47NBZ-khxOjyEXAMPLE");
+         assertEquals(request.getHeader(GlacierHeaders.PART_SIZE), "4194304");
+         assertEquals(request.getHeader(GlacierHeaders.ARCHIVE_DESCRIPTION), "MyArchive-101");
+      } finally {
+         server.shutdown();
+      }
+   }
+
+   public void testUploadPart() throws IOException, InterruptedException {
+      // Prepare the response
+      MockResponse mr = new MockResponse();
+      mr.setResponseCode(204);
+      mr.addHeader(GlacierHeaders.REQUEST_ID, "AAABZpJrTyioDC_HsOmHae8EZp_uBSJr6cnGOLKp_XJCl-Q");
+      mr.addHeader(HttpHeaders.DATE, "Sun, 25 Mar 2012 12:00:00 GMT");
+      mr.addHeader(GlacierHeaders.TREE_HASH, "c06f7cd4baacb087002a99a5f48bf953");
+      MockWebServer server = new MockWebServer();
+      server.enqueue(mr);
+      server.play();
+
+      // Send the request and check the response
+      try {
+         GlacierClient client = getGlacierClient(server.getUrl("/"));
+         String hash = client.uploadPart("examplevault",
+               "OW2fM5iVylEpFEMM9_HpKowRapC3vn5sSL39_396UW9zLFUWVrnRHaPjUJddQ5OxSHVXjYtrN47NBZ-khxOjyEXAMPLE",
+               ContentRange.Builder.fromPartNumber(0, 4), buildPayload(4 * MiB));
+         RecordedRequest request = server.takeRequest();
+         assertEquals(
+               request.getRequestLine(),
+               "PUT /-/vaults/examplevault/multipart-uploads/OW2fM5iVylEpFEMM9_HpKowRapC3vn5sSL39_396UW9zLFUWVrnRHaPjUJddQ5OxSHVXjYtrN47NBZ-khxOjyEXAMPLE HTTP/1.1");
+         assertEquals(hash, "c06f7cd4baacb087002a99a5f48bf953");
+         assertEquals(request.getHeader(HttpHeaders.CONTENT_RANGE), "bytes 0-4194303/*");
+         assertEquals(request.getHeader(HttpHeaders.CONTENT_LENGTH), "4194304");
       } finally {
          server.shutdown();
       }
