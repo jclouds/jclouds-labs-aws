@@ -22,18 +22,18 @@ import org.jclouds.predicates.Validator;
 /**
  * Validates the part size parameter used when initiating multipart uploads.
  */
-public final class PartSizeValidator extends Validator<Integer> {
+public final class PartSizeValidator extends Validator<Long> {
    private static final int MIN_PART_SIZE = 1;
    private static final int MAX_PART_SIZE = 4096;
 
    @Override
-   public void validate(@Nullable Integer partSizeInMB) throws IllegalArgumentException {
+   public void validate(@Nullable Long partSizeInMB) throws IllegalArgumentException {
       if (partSizeInMB == null || partSizeInMB < MIN_PART_SIZE ||
             partSizeInMB > MAX_PART_SIZE || (partSizeInMB & (partSizeInMB - 1)) != 0)
          throw exception(partSizeInMB, "partSizeInMB must be a power of 2 between 1 and 4096.");
    }
 
-   protected static IllegalArgumentException exception(Integer size, String reason) {
+   protected static IllegalArgumentException exception(Long size, String reason) {
       return new IllegalArgumentException(
             String.format(
                   "Part size '%s' doesn't match Glacier Multipart upload rules. "

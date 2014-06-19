@@ -126,12 +126,12 @@ public interface GlacierClient extends Closeable {
     * @return The Multipart Upload Id.
     * @see <a href="http://docs.aws.amazon.com/amazonglacier/latest/dev/api-multipart-initiate-upload.html" />
     */
-   String initiateMultipartUpload(String vaultName, int partSizeInMB, String description);
+   String initiateMultipartUpload(String vaultName, long partSizeInMB, String description);
 
    /**
     * Starts a new multipart upload.
     */
-   String initiateMultipartUpload(String vaultName, int partSizeInMB);
+   String initiateMultipartUpload(String vaultName, long partSizeInMB);
 
    /**
     * Uploads one of the multipart upload parts.

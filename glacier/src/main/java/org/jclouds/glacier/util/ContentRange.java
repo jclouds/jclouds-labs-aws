@@ -16,15 +16,12 @@
  */
 package org.jclouds.glacier.util;
 
-import java.util.Iterator;
-
 import com.google.common.base.Objects;
-import com.google.common.base.Splitter;
 
 /**
  * This class represents a range of bytes.
  */
-public class ContentRange {
+public final class ContentRange {
    private final long from;
    private final long to;
 
@@ -69,13 +66,13 @@ public class ContentRange {
       public static ContentRange fromString(String contentRangeString) {
          if (!contentRangeString.matches("[0-9]+-[0-9]+"))
             return null;
-         Iterator<String> strings = Splitter.on('-').split(contentRangeString).iterator();
-         long from = Long.parseLong(strings.next());
-         long to = Long.parseLong(strings.next());
+         String[] strings = contentRangeString.split("-", 2);//String Splitter.on('-').split(contentRangeString).iterator();
+         long from = Long.parseLong(strings[0]);
+         long to = Long.parseLong(strings[1]);
          return new ContentRange(from, to);
       }
 
-      public static ContentRange fromPartNumber(long partNumber, int partSizeInMB) {
+      public static ContentRange fromPartNumber(long partNumber, long partSizeInMB) {
          long from = partNumber * partSizeInMB;
          long to = from + (partSizeInMB << 20) - 1;
          return new ContentRange(from, to);

@@ -161,7 +161,7 @@ public interface GlacierAsyncClient extends Closeable {
    @ResponseParser(ParseMultipartUploadIdHeader.class)
    ListenableFuture<String> initiateMultipartUpload(
          @ParamValidators(VaultNameValidator.class) @PathParam("vault") String vaultName,
-         @ParamValidators(PartSizeValidator.class) @BinderParam(BindPartSizeToHeaders.class) int partSizeInMB,
+         @ParamValidators(PartSizeValidator.class) @BinderParam(BindPartSizeToHeaders.class) long partSizeInMB,
          @ParamValidators(DescriptionValidator.class) @BinderParam(BindDescriptionToHeaders.class) String description);
 
    /**
@@ -173,7 +173,7 @@ public interface GlacierAsyncClient extends Closeable {
    @ResponseParser(ParseMultipartUploadIdHeader.class)
    ListenableFuture<String> initiateMultipartUpload(
          @ParamValidators(VaultNameValidator.class) @PathParam("vault") String vaultName,
-         @ParamValidators(PartSizeValidator.class) @BinderParam(BindPartSizeToHeaders.class) int partSizeInMB);
+         @ParamValidators(PartSizeValidator.class) @BinderParam(BindPartSizeToHeaders.class) long partSizeInMB);
 
    /**
     * @see GlacierClient#uploadPart

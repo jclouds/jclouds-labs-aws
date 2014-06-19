@@ -30,9 +30,9 @@ public class BindPartSizeToHeaders implements Binder {
    @SuppressWarnings("unchecked")
    @Override
    public <R extends HttpRequest> R bindToRequest(R request, Object input) {
-      checkArgument(checkNotNull(input, "input") instanceof Integer, "This binder is only valid for int");
+      checkArgument(checkNotNull(input, "input") instanceof Long, "This binder is only valid for long");
       checkNotNull(request, "request");
-      Integer partSizeInMB = Integer.class.cast(input);
+      Long partSizeInMB = Long.class.cast(input);
       return (R) request.toBuilder()
             .replaceHeader(GlacierHeaders.PART_SIZE, Long.toString(partSizeInMB << 20 ))
             .build();

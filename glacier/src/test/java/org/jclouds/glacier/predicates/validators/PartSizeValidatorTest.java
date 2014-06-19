@@ -23,16 +23,16 @@ public class PartSizeValidatorTest {
    private static final PartSizeValidator VALIDATOR = new PartSizeValidator();
 
    public void testValidate() {
-      VALIDATOR.validate(1);
-      VALIDATOR.validate(2);
-      VALIDATOR.validate(4);
-      VALIDATOR.validate(32);
-      VALIDATOR.validate(4096);
+      VALIDATOR.validate(1L);
+      VALIDATOR.validate(2L);
+      VALIDATOR.validate(4L);
+      VALIDATOR.validate(32L);
+      VALIDATOR.validate(4096L);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testZero() {
-      VALIDATOR.validate(0);
+      VALIDATOR.validate(0L);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
@@ -42,11 +42,11 @@ public class PartSizeValidatorTest {
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testTooBig() {
-      VALIDATOR.validate(8192);
+      VALIDATOR.validate(8192L);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testNotPowerOfTwo() {
-      VALIDATOR.validate(25);
+      VALIDATOR.validate(25L);
    }
 }
