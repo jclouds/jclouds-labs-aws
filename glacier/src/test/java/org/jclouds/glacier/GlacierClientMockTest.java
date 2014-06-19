@@ -42,6 +42,7 @@ import org.jclouds.glacier.domain.VaultMetadata;
 import org.jclouds.glacier.options.PaginationOptions;
 import org.jclouds.glacier.reference.GlacierHeaders;
 import org.jclouds.glacier.util.ContentRange;
+import org.jclouds.http.HttpResponseException;
 import org.jclouds.io.Payload;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -254,8 +255,12 @@ public class GlacierClientMockTest {
 
       long size = 1024;
       ContentRange range = ContentRange.Builder.fromPartNumber(0, size);
-      Payload payload = buildPayload(size * MiB);
-      client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, range, payload);
+      Payload payload = buildPayload(1);
+      payload.getContentMetadata().setContentLength(size * MiB);
+      try {
+         client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, range, payload);
+      } catch (HttpResponseException e) {
+      }
       RecordedRequest request = server.takeRequest();
       assertEquals(request.getRequestLine(), "PUT /-/vaults/" + VAULT_NAME + "/multipart-uploads/" + MULTIPART_UPLOAD_ID + " " + HTTP);
       assertEquals(request.getHeader(HttpHeaders.CONTENT_RANGE), range.buildHeader());
