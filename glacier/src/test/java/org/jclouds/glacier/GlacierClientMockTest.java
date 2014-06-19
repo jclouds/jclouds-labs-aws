@@ -40,12 +40,12 @@ import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
 import org.jclouds.glacier.options.PaginationOptions;
 import org.jclouds.glacier.reference.GlacierHeaders;
-import org.jclouds.io.ByteSources;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Resources;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 import com.google.inject.Module;
@@ -100,10 +100,7 @@ public class GlacierClientMockTest {
    }
 
    private static String getResponseBody(String path) throws IOException {
-      return ByteSources
-            .asByteSource(GlacierClientMockTest.class.getResourceAsStream(path))
-            .asCharSource(UTF_8)
-            .read();
+      return Resources.toString(Resources.getResource(GlacierClientMockTest.class, path), UTF_8);
    }
 
    @BeforeTest
