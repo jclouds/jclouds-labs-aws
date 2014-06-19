@@ -44,6 +44,7 @@ import org.jclouds.glacier.reference.GlacierHeaders;
 import org.jclouds.glacier.util.ContentRange;
 import org.jclouds.http.HttpResponseException;
 import org.jclouds.io.Payload;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -237,7 +238,7 @@ public class GlacierClientMockTest {
       server.enqueue(mr);
 
       assertEquals(
-            client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, ContentRange.Builder.fromPartNumber(0, 4), buildPayload(4 * MiB)),
+            client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, ContentRange.fromPartNumber(0, 4), buildPayload(4 * MiB)),
             TREEHASH);
       RecordedRequest request = server.takeRequest();
       assertEquals(request.getRequestLine(),
@@ -246,19 +247,23 @@ public class GlacierClientMockTest {
       assertEquals(request.getHeader(HttpHeaders.CONTENT_LENGTH), "4194304");
    }
 
+   // TODO: Change size to 4096 when moving to JDK 7
    @Test
-   //TODO Change size to 4096 when moving to JDK 7
    public void testUploadPartMaxSize() throws InterruptedException {
       MockResponse mr = buildBaseResponse(204);
       mr.addHeader(GlacierHeaders.TREE_HASH, TREEHASH);
       server.enqueue(mr);
 
       long size = 1024;
-      ContentRange range = ContentRange.Builder.fromPartNumber(0, size);
+      ContentRange range = ContentRange.fromPartNumber(0, size);
       Payload payload = buildPayload(1);
       payload.getContentMetadata().setContentLength(size * MiB);
       try {
+         /* The client.uploadPart call should throw an HttpResponseException since the payload is smaller than expected.
+          * This trick makes the test way faster.
+          */
          client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, range, payload);
+         Assert.fail();
       } catch (HttpResponseException e) {
       }
       RecordedRequest request = server.takeRequest();

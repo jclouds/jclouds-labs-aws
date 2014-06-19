@@ -24,76 +24,76 @@ import org.testng.annotations.Test;
 public class ContentRangeTest {
    @Test
    public void testContentRangeFromString() {
-      ContentRange range = ContentRange.Builder.fromString("0-10");
+      ContentRange range = ContentRange.fromString("0-10");
       assertEquals(range.getFrom(), 0);
       assertEquals(range.getTo(), 10);
-      range = ContentRange.Builder.fromString("1000-2000");
+      range = ContentRange.fromString("1000-2000");
       assertEquals(range.getFrom(), 1000);
       assertEquals(range.getTo(), 2000);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromStringWithoutTo() {
-      ContentRange.Builder.fromString("-10");
+      ContentRange.fromString("-10");
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromStringWithoutFrom() {
-      ContentRange.Builder.fromString("10-");
+      ContentRange.fromString("10-");
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromStringWithEmptyString() {
-      ContentRange.Builder.fromString("");
+      ContentRange.fromString("");
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromStringWithNullString() {
-      ContentRange.Builder.fromString(null);
+      ContentRange.fromString(null);
    }
 
    @Test
    public void testContentRangeFromPartNumber() {
-      ContentRange range = ContentRange.Builder.fromPartNumber(0, 4096);
+      ContentRange range = ContentRange.fromPartNumber(0, 4096);
       assertEquals(range.getFrom(), 0);
       assertEquals(range.getTo(), (4096L << 20) - 1);
-      range = ContentRange.Builder.fromPartNumber(1, 4096);
+      range = ContentRange.fromPartNumber(1, 4096);
       assertEquals(range.getFrom(), 4096L << 20);
       assertEquals(range.getTo(), 2 * (4096L << 20) - 1);
-      range = ContentRange.Builder.fromPartNumber(2, 4096);
+      range = ContentRange.fromPartNumber(2, 4096);
       assertEquals(range.getFrom(), 2 * (4096L << 20));
       assertEquals(range.getTo(), 3 * (4096L << 20) - 1);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromPartNumberWithNegativePartNumber() {
-      ContentRange.Builder.fromPartNumber(-1, 4096);
+      ContentRange.fromPartNumber(-1, 4096);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testContentRangeFromPartNumberWithZeroPartSize() {
-      ContentRange.Builder.fromPartNumber(0, 0);
+      ContentRange.fromPartNumber(0, 0);
    }
 
    @Test
    public void testBuildContentRange() {
-      ContentRange range = ContentRange.Builder.build(0, 4096);
+      ContentRange range = ContentRange.build(0, 4096);
       assertEquals(range.getFrom(), 0);
       assertEquals(range.getTo(), 4096);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testBuildContentRangeWithTransposedValues() {
-      ContentRange.Builder.build(50, 10);
+      ContentRange.build(50, 10);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testBuildContentRangeWithNegatives() {
-      ContentRange.Builder.build(-100, -50);
+      ContentRange.build(-100, -50);
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
    public void testBuildContentRangeWithZeroTo() {
-      ContentRange.Builder.build(0, 0);
+      ContentRange.build(0, 0);
    }
 }
