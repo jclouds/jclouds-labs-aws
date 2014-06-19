@@ -42,6 +42,7 @@ import org.jclouds.glacier.domain.VaultMetadata;
 import org.jclouds.glacier.options.PaginationOptions;
 import org.jclouds.glacier.reference.GlacierHeaders;
 import org.jclouds.glacier.util.ContentRange;
+import org.jclouds.io.Payload;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -110,6 +111,7 @@ public class GlacierClientMockTest {
    @BeforeTest
    private void initServer() throws IOException {
       server = new MockWebServer();
+      server.setBodyLimit(0);
       server.play();
       client = getGlacierClient(server.getUrl("/"));
    }
@@ -241,5 +243,22 @@ public class GlacierClientMockTest {
             "PUT /-/vaults/" + VAULT_NAME + "/multipart-uploads/" + MULTIPART_UPLOAD_ID + " " + HTTP);
       assertEquals(request.getHeader(HttpHeaders.CONTENT_RANGE), "bytes 0-4194303/*");
       assertEquals(request.getHeader(HttpHeaders.CONTENT_LENGTH), "4194304");
+   }
+
+   @Test
+   //TODO Change size to 4096 when moving to JDK 7
+   public void testUploadPartMaxSize() throws InterruptedException {
+      MockResponse mr = buildBaseResponse(204);
+      mr.addHeader(GlacierHeaders.TREE_HASH, TREEHASH);
+      server.enqueue(mr);
+
+      long size = 1024;
+      ContentRange range = ContentRange.Builder.fromPartNumber(0, size);
+      Payload payload = buildPayload(size * MiB);
+      client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, range, payload);
+      RecordedRequest request = server.takeRequest();
+      assertEquals(request.getRequestLine(), "PUT /-/vaults/" + VAULT_NAME + "/multipart-uploads/" + MULTIPART_UPLOAD_ID + " " + HTTP);
+      assertEquals(request.getHeader(HttpHeaders.CONTENT_RANGE), range.buildHeader());
+      assertEquals(request.getHeader(HttpHeaders.CONTENT_LENGTH), payload.getContentMetadata().getContentLength().toString());
    }
 }
