@@ -16,6 +16,8 @@
  */
 package org.jclouds.glacier.util;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import com.google.common.base.Objects;
 
 /**
@@ -26,6 +28,10 @@ public final class ContentRange {
    private final long to;
 
    private ContentRange(long from, long to) {
+      if (from > to)
+         throw Builder.exception("\"from\" should be lower than \"to\"");
+      if (from < 0 || to < 1)
+         throw Builder.exception("\"from\" cannot be negative and \"to\" has to be possitive");
       this.from = from;
       this.to = to;
    }
@@ -62,24 +68,33 @@ public final class ContentRange {
       return from + "-" + to;
    }
 
-   public static class Builder {
+   public static final class Builder {
       public static ContentRange fromString(String contentRangeString) {
-         if (!contentRangeString.matches("[0-9]+-[0-9]+"))
-            return null;
-         String[] strings = contentRangeString.split("-", 2);//String Splitter.on('-').split(contentRangeString).iterator();
+         if (isNullOrEmpty(contentRangeString) || !contentRangeString.matches("[0-9]+-[0-9]+"))
+            throw exception("The string should be two numbers separated by a hyphen (from-to)");
+         String[] strings = contentRangeString.split("-", 2);
          long from = Long.parseLong(strings[0]);
          long to = Long.parseLong(strings[1]);
          return new ContentRange(from, to);
       }
 
       public static ContentRange fromPartNumber(long partNumber, long partSizeInMB) {
-         long from = partNumber * partSizeInMB;
+         if (partNumber < 0)
+            throw exception("The part number cannot be negative");
+         if (partSizeInMB < 1)
+            throw exception("The part size has to be possitive");
+         long from = partNumber * (partSizeInMB << 20);
          long to = from + (partSizeInMB << 20) - 1;
          return new ContentRange(from, to);
       }
 
       public static ContentRange build(long from, long to) {
          return new ContentRange(from, to);
+      }
+
+      protected static IllegalArgumentException exception(String reason) {
+         return new IllegalArgumentException(
+               String.format("Cannot build the indicated ContentRange Reason: %s.", reason));
       }
    }
 }

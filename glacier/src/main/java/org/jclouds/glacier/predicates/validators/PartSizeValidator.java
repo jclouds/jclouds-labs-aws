@@ -16,7 +16,8 @@
  */
 package org.jclouds.glacier.predicates.validators;
 
-import org.jclouds.javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.jclouds.predicates.Validator;
 
 /**
@@ -27,9 +28,9 @@ public final class PartSizeValidator extends Validator<Long> {
    private static final int MAX_PART_SIZE = 4096;
 
    @Override
-   public void validate(@Nullable Long partSizeInMB) throws IllegalArgumentException {
-      if (partSizeInMB == null || partSizeInMB < MIN_PART_SIZE ||
-            partSizeInMB > MAX_PART_SIZE || (partSizeInMB & (partSizeInMB - 1)) != 0)
+   public void validate(Long partSizeInMB) throws IllegalArgumentException {
+      checkNotNull(partSizeInMB, "partSizeInMB");
+      if (partSizeInMB < MIN_PART_SIZE || partSizeInMB > MAX_PART_SIZE || (partSizeInMB & (partSizeInMB - 1)) != 0)
          throw exception(partSizeInMB, "partSizeInMB must be a power of 2 between 1 and 4096.");
    }
 

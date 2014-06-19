@@ -36,11 +36,6 @@ public class PartSizeValidatorTest {
    }
 
    @Test(expectedExceptions = IllegalArgumentException.class)
-   public void testNull() {
-      VALIDATOR.validate(null);
-   }
-
-   @Test(expectedExceptions = IllegalArgumentException.class)
    public void testTooBig() {
       VALIDATOR.validate(8192L);
    }
