@@ -34,7 +34,7 @@ public final class PartSizeValidator extends Validator<Long> {
    @Override
    public void validate(Long partSizeInMB) throws IllegalArgumentException {
       checkNotNull(partSizeInMB, "partSizeInMB");
-      checkArgument(!(partSizeInMB < MIN_PART_SIZE || partSizeInMB > MAX_PART_SIZE || (partSizeInMB & (partSizeInMB - 1)) != 0),
+      checkArgument(!(partSizeInMB < MIN_PART_SIZE || partSizeInMB > MAX_PART_SIZE || Long.bitCount(partSizeInMB) != 1),
             "partSizeInMB must be a power of 2 between 1 and 4096.");
    }
 }
