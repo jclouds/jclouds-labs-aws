@@ -58,7 +58,7 @@ public class MultipartUploadMetadata extends IterableWithMarker<PartMetadata> im
          long partSizeInBytes, String vaultARN, @Nullable Iterable<PartMetadata> parts, @Nullable String marker) {
       super();
       this.archiveDescription = archiveDescription;
-      this.creationDate = checkNotNull(creationDate, "creationDate");
+      this.creationDate = (Date) checkNotNull(creationDate, "creationDate").clone();
       this.multipartUploadId = checkNotNull(multipartUploadId, "multipartUploadId");
       this.partSizeInBytes = partSizeInBytes;
       this.vaultARN = checkNotNull(vaultARN, "vaultARN");
@@ -71,7 +71,7 @@ public class MultipartUploadMetadata extends IterableWithMarker<PartMetadata> im
    }
 
    public Date getCreationDate() {
-      return creationDate;
+      return (Date) creationDate.clone();
    }
 
    public String getMultipartUploadId() {
