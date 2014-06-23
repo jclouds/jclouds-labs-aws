@@ -22,6 +22,7 @@ import java.beans.ConstructorProperties;
 
 import org.jclouds.glacier.util.ContentRange;
 
+import com.google.common.hash.HashCode;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -30,14 +31,14 @@ import com.google.gson.annotations.SerializedName;
 public class PartMetadata {
 
    @SerializedName("SHA256TreeHash")
-   private final String treeHash;
+   private final HashCode treeHash;
    @SerializedName("RangeInBytes")
    private final ContentRange range;
 
    @ConstructorProperties({ "SHA256TreeHash", "RangeInBytes" })
    public PartMetadata(String treeHash, String range) {
       super();
-      this.treeHash = checkNotNull(treeHash, "treeHash");
+      this.treeHash = HashCode.fromString(checkNotNull(treeHash, "treeHash"));
       this.range = ContentRange.fromString(checkNotNull(range, "range"));
    }
 
@@ -45,7 +46,7 @@ public class PartMetadata {
       return range;
    }
 
-   public String getTreeHash() {
+   public HashCode getTreeHash() {
       return treeHash;
    }
 

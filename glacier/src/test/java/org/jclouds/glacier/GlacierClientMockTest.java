@@ -324,7 +324,7 @@ public class GlacierClientMockTest {
       assertEquals(result.getMultipartUploadId(), MULTIPART_UPLOAD_ID);
       assertEquals(result.getPartSizeInBytes(), 4194304);
       PartMetadata part = result.iterator().next();
-      assertEquals(part.getTreeHash(), "01d34dabf7be316472c93b1ef80721f5d4");
+      assertEquals(part.getTreeHash(), HashCode.fromString("01d34dabf7be316472c93b1ef80721f5d4"));
       assertEquals("4194304-8388607", part.getRange().getFrom() + "-" + part.getRange().getTo());
       assertEquals(server.takeRequest().getRequestLine(),
             "GET /-/vaults/examplevault/multipart-uploads/" + MULTIPART_UPLOAD_ID + "?limit=1&marker=1001 " + HTTP);
