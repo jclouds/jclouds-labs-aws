@@ -98,7 +98,7 @@ public class GlacierClientLiveTest extends BaseApiLiveTest<GlacierClient>{
       String uploadId = api.initiateMultipartUpload(VAULT_NAME1, partSizeInMb);
       try {
          assertNotNull(api.uploadPart(VAULT_NAME1, uploadId,
-               ContentRange.fromPartNumber(0, partSizeInMb), buildPayload(1 * MiB)));
+               ContentRange.fromPartNumber(0, partSizeInMb), buildPayload(partSizeInMb * MiB)));
          PaginatedMultipartUploadCollection uploads = api.listMultipartUploads(VAULT_NAME1);
          ImmutableList.Builder<String> list = ImmutableList.builder();
          for (MultipartUploadMetadata upload : uploads) {
