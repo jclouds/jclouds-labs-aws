@@ -17,15 +17,20 @@
 package org.jclouds.glacier;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.UUID;
 
 import org.jclouds.apis.BaseApiLiveTest;
+import org.jclouds.glacier.domain.MultipartUploadMetadata;
+import org.jclouds.glacier.domain.PaginatedMultipartUploadCollection;
 import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Live test for Glacier.
@@ -74,8 +79,35 @@ public class GlacierClientLiveTest extends BaseApiLiveTest<GlacierClient>{
       assertEquals(api.listMultipartUploads(VAULT_NAME1).size(), 0);
    }
 
+   @Test(groups = { "integration", "live" }, dependsOnMethods = { "testListMultipartUploadsWithEmptyList" })
+   public void testInitiateAndAbortMultipartUpload() throws Exception {
+      String uploadId = api.initiateMultipartUpload(VAULT_NAME1, 8);
+      try {
+         assertNotNull(uploadId);
+      } finally {
+         api.abortMultipartUpload(VAULT_NAME1, uploadId);
+      }
+   }
+
+   @Test(groups = { "integration", "live" }, dependsOnMethods = { "testInitiateAndAbortMultipartUpload" })
+   public void testListMultipartUploads() throws Exception {
+      String uploadId = api.initiateMultipartUpload(VAULT_NAME1, 8);
+      try {
+         PaginatedMultipartUploadCollection uploads = api.listMultipartUploads(VAULT_NAME1);
+         ImmutableList.Builder<String> list = ImmutableList.<String>builder();
+         for(MultipartUploadMetadata upload : uploads) {
+            list.add(upload.getMultipartUploadId());
+         }
+         assertTrue(list.build().contains(uploadId));
+         assertTrue(api.abortMultipartUpload(VAULT_NAME1, uploadId));
+      } finally {
+         api.abortMultipartUpload(VAULT_NAME1, uploadId);
+      }
+   }
+
    @Test(groups = { "integration", "live" },
-         dependsOnMethods = { "testListAndDescribeVaults", "testListMultipartUploadsWithEmptyList" })
+         dependsOnMethods = { "testListAndDescribeVaults", "testListMultipartUploadsWithEmptyList",
+         "testInitiateAndAbortMultipartUpload", "testListMultipartUploads" })
    public void testDeleteVault() throws Exception {
       assertTrue(api.deleteVault(VAULT_NAME1));
       assertTrue(api.deleteVault(VAULT_NAME2));
