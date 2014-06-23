@@ -16,6 +16,8 @@
  */
 package org.jclouds.glacier;
 
+import static org.jclouds.glacier.util.TestUtils.MiB;
+import static org.jclouds.glacier.util.TestUtils.buildPayload;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
@@ -28,6 +30,7 @@ import org.jclouds.glacier.domain.MultipartUploadMetadata;
 import org.jclouds.glacier.domain.PaginatedMultipartUploadCollection;
 import org.jclouds.glacier.domain.PaginatedVaultCollection;
 import org.jclouds.glacier.domain.VaultMetadata;
+import org.jclouds.glacier.util.ContentRange;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -91,11 +94,14 @@ public class GlacierClientLiveTest extends BaseApiLiveTest<GlacierClient>{
 
    @Test(groups = { "integration", "live" }, dependsOnMethods = { "testInitiateAndAbortMultipartUpload" })
    public void testListMultipartUploads() throws Exception {
-      String uploadId = api.initiateMultipartUpload(VAULT_NAME1, 8);
+      long partSizeInMb = 1;
+      String uploadId = api.initiateMultipartUpload(VAULT_NAME1, partSizeInMb);
       try {
+         assertNotNull(api.uploadPart(VAULT_NAME1, uploadId,
+               ContentRange.fromPartNumber(0, partSizeInMb), buildPayload(1 * MiB)));
          PaginatedMultipartUploadCollection uploads = api.listMultipartUploads(VAULT_NAME1);
-         ImmutableList.Builder<String> list = ImmutableList.<String>builder();
-         for(MultipartUploadMetadata upload : uploads) {
+         ImmutableList.Builder<String> list = ImmutableList.builder();
+         for (MultipartUploadMetadata upload : uploads) {
             list.add(upload.getMultipartUploadId());
          }
          assertTrue(list.build().contains(uploadId));
