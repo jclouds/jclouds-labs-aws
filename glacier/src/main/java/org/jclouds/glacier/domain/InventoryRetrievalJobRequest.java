@@ -33,7 +33,7 @@ public class InventoryRetrievalJobRequest extends JobRequest {
    @SerializedName("InventoryRetrievalParameters")
    private final InventoryRetrievalParameters parameters;
 
-   @ConstructorProperties({ "Description", "Format", "InventoryRetrievalParameters" })
+   @ConstructorProperties({ "Description", "Format" })
    private InventoryRetrievalJobRequest(@Nullable String description, @Nullable String format) {
       super(TYPE);
       this.description = description;

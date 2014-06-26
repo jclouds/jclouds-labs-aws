@@ -16,10 +16,6 @@
  */
 package org.jclouds.glacier.domain;
 
-import java.beans.ConstructorProperties;
-
-import org.jclouds.javax.annotation.Nullable;
-
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 
@@ -32,15 +28,6 @@ public class InventoryRetrievalParameters {
       private Integer limit;
       @SerializedName("Marker")
       private String marker;
-
-      @ConstructorProperties({ "StartDate", "EndDate", "Limit", "Marker" })
-      private InventoryRetrievalParameters(@Nullable String startDate, @Nullable String endDate,
-            @Nullable Integer limit, @Nullable String marker) {
-         this.startDate = startDate;
-         this.endDate = endDate;
-         this.limit = limit;
-         this.marker = marker;
-      }
 
       public InventoryRetrievalParameters() {
       }

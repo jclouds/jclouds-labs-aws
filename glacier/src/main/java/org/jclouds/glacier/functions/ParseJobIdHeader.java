@@ -30,8 +30,9 @@ public class ParseJobIdHeader implements Function<HttpResponse, String> {
    @Override
    public String apply(HttpResponse from) {
       String id = from.getFirstHeaderOrNull(GlacierHeaders.JOB_ID);
-      if (id == null)
+      if (id == null) {
          throw new HttpException("Did not receive JobId");
+      }
       return id;
    }
 }
