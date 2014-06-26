@@ -92,7 +92,7 @@ public class ArchiveRetrievalJobRequest extends JobRequest {
       private String description;
       private ContentRange range;
 
-      public Builder() {
+      protected Builder() {
       }
 
       public Builder archiveId(String archiveId) {
