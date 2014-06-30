@@ -517,7 +517,7 @@ public class GlacierClientMockTest {
 
       ArchiveMetadataCollection archives = client.getInventoryRetrievalOutput(VAULT_NAME, JOB_ID);
       assertEquals(archives.getVaultARN(), "arn:aws:glacier:us-east-1:012345678901:vaults/examplevault");
-      Iterator<ArchiveMetadata> i = archives.getArchives().iterator();
+      Iterator<ArchiveMetadata> i = archives.iterator();
       ArchiveMetadata archive = i.next();
       assertEquals(archive.getArchiveId(),
             "DMTmICA2n5Tdqq5BV2z7og-A20xnpAPKt3UXwWxdWsn_D6auTUrW6kwy5Qyj9xd1MCE1mBYvMQ63LWaT8yTMzMaCxB_9VBWrW4Jw4zsvg5kehAPDVKcppUD1X7b24JukOr4mMAq-oA");
