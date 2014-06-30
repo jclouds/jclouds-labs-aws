@@ -20,11 +20,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.beans.ConstructorProperties;
 import java.util.Date;
+import java.util.Iterator;
 
+import com.google.common.collect.FluentIterable;
 import com.google.gson.annotations.SerializedName;
 
 
-public class ArchiveMetadataCollection {
+public class ArchiveMetadataCollection extends FluentIterable<ArchiveMetadata>{
 
    @SerializedName("ArchiveList")
    private final Iterable<ArchiveMetadata> archives;
@@ -40,8 +42,9 @@ public class ArchiveMetadataCollection {
       this.inventoryDate = (Date) checkNotNull(inventoryDate, "inventoryDate").clone();
    }
 
-   public Iterable<ArchiveMetadata> getArchives() {
-      return archives;
+   @Override
+   public Iterator<ArchiveMetadata> iterator() {
+      return archives.iterator();
    }
 
    public String getVaultARN() {
