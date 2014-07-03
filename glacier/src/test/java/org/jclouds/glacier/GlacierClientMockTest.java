@@ -260,7 +260,7 @@ public class GlacierClientMockTest {
       server.enqueue(mr);
 
       assertThat(client.uploadPart(VAULT_NAME, MULTIPART_UPLOAD_ID, ContentRange.fromPartNumber(0, 4),
-              buildPayload(4 * MiB))).isEqualTo(TREEHASH);
+              buildPayload(4 * MiB))).isEqualTo(HashCode.fromString(TREEHASH));
 
       RecordedRequest request = server.takeRequest();
       assertEquals(request.getRequestLine(),
