@@ -16,33 +16,14 @@
  */
 package org.jclouds.glacier.domain;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.CaseFormat;
 
 public enum JobStatus {
-   SUCCEEDED("Succeeded"),
-   FAILED("Failed"),
-   IN_PROGRESS("InProgress");
-
-   private final String value;
-
-   private static final Map<String, JobStatus> stringToEnum = ImmutableMap.of("Succeeded", SUCCEEDED,
-         "Failed", FAILED, "InProgress", IN_PROGRESS);
+   SUCCEEDED,
+   FAILED,
+   IN_PROGRESS;
 
    public static JobStatus fromString(String symbol) {
-      return stringToEnum.get(symbol);
-   }
-
-   public String getValue() {
-      return this.value;
-   }
-
-   public String toString() {
-      return this.value;
-   }
-
-   JobStatus(String value) {
-      this.value = value;
+      return JobStatus.valueOf(CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, symbol));
    }
 }
