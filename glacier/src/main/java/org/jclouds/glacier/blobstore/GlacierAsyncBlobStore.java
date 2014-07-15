@@ -37,7 +37,6 @@ import org.jclouds.crypto.Crypto;
 import org.jclouds.domain.Location;
 import org.jclouds.glacier.GlacierAsyncClient;
 import org.jclouds.glacier.GlacierClient;
-import org.jclouds.glacier.domain.ArchiveMetadataCollection;
 import org.jclouds.javax.annotation.Nullable;
 
 import com.google.common.base.Supplier;
@@ -51,14 +50,14 @@ public class GlacierAsyncBlobStore extends BaseAsyncBlobStore {
    private final GlacierAsyncClient async;
    private final GlacierClient sync;
    private final Crypto crypto;
-   private final Cache<String, ArchiveMetadataCollection> inventoryCache;
+   private final Cache<String, String> inventoryCache;
    private final Cache<String, String> archiveCache;
 
    @Inject
    GlacierAsyncBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,
                          @Named(Constants.PROPERTY_USER_THREADS) ListeningExecutorService userExecutor,
                          @Memoized Supplier<Set<? extends Location>> locations, GlacierAsyncClient async, Crypto crypto,
-                         Cache<String, ArchiveMetadataCollection> inventoryCache, Cache<String, String> archiveCache,
+                         Cache<String, String> inventoryCache, Cache<String, String> archiveCache,
                          GlacierClient sync) {
       super(context, blobUtils, userExecutor, defaultLocation, locations);
       this.sync = checkNotNull(sync, "sync");
