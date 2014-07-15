@@ -61,8 +61,7 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    @Override
    protected boolean deleteAndVerifyContainerGone(String container) {
-      sync.deleteVault(container);
-      return this.containerExists(container);
+      return sync.deleteVault(container);
    }
 
    @Override

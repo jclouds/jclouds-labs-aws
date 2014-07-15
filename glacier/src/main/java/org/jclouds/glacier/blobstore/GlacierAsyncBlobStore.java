@@ -70,7 +70,7 @@ public class GlacierAsyncBlobStore extends BaseAsyncBlobStore {
 
    @Override
    protected boolean deleteAndVerifyContainerGone(String container) {
-      return sync.deleteVault(container);
+      throw new UnsupportedOperationException();
    }
 
    @Override
