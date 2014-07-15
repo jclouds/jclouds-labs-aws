@@ -22,11 +22,7 @@ import org.jclouds.blobstore.attr.ConsistencyModel;
 import org.jclouds.glacier.blobstore.GlacierAsyncBlobStore;
 import org.jclouds.glacier.blobstore.GlacierBlobStore;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 public class GlacierBlobStoreContextModule extends AbstractModule {
    @Override
@@ -34,11 +30,5 @@ public class GlacierBlobStoreContextModule extends AbstractModule {
       bind(ConsistencyModel.class).toInstance(ConsistencyModel.EVENTUAL);
       bind(BlobStore.class).to(GlacierBlobStore.class);
       bind(AsyncBlobStore.class).to(GlacierAsyncBlobStore.class);
-   }
-
-   @Provides
-   @Singleton
-   protected Cache<String, String> jobCache() {
-      return CacheBuilder.newBuilder().build();
    }
 }

@@ -38,24 +38,18 @@ import org.jclouds.glacier.GlacierClient;
 import org.jclouds.javax.annotation.Nullable;
 
 import com.google.common.base.Supplier;
-import com.google.common.cache.Cache;
 import com.google.inject.Inject;
 
 public class GlacierBlobStore extends BaseBlobStore {
    private final GlacierClient sync;
    private final Crypto crypto;
-   private final Cache<String, String> inventoryCache;
-   private final Cache<String, String> archiveCache;
 
    @Inject
    GlacierBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,
-                    @Memoized Supplier<Set<? extends Location>> locations, GlacierClient sync, Crypto crypto,
-                    Cache<String, String> inventoryCache, Cache<String, String> archiveCache) {
+                    @Memoized Supplier<Set<? extends Location>> locations, GlacierClient sync, Crypto crypto) {
       super(context, blobUtils, defaultLocation, locations);
       this.sync = checkNotNull(sync, "sync");
       this.crypto = checkNotNull(crypto, "crypto");
-      this.inventoryCache = checkNotNull(inventoryCache, "inventoryCache");
-      this.archiveCache = checkNotNull(archiveCache, "archiveCache");
    }
 
    @Override
