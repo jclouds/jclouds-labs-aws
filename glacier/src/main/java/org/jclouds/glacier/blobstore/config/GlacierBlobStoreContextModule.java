@@ -16,8 +16,10 @@
  */
 package org.jclouds.glacier.blobstore.config;
 
+import org.jclouds.blobstore.AsyncBlobStore;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.attr.ConsistencyModel;
+import org.jclouds.glacier.blobstore.GlacierAsyncBlobStore;
 import org.jclouds.glacier.blobstore.GlacierBlobStore;
 import org.jclouds.glacier.domain.ArchiveMetadataCollection;
 
@@ -32,6 +34,7 @@ public class GlacierBlobStoreContextModule extends AbstractModule{
    protected void configure() {
       bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
       bind(BlobStore.class).to(GlacierBlobStore.class);
+      bind(AsyncBlobStore.class).to(GlacierAsyncBlobStore.class);
    }
 
    @Provides
