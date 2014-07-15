@@ -67,7 +67,7 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    @Override
    public PageSet<? extends StorageMetadata> list() {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    @Override
@@ -88,12 +88,12 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    @Override
    public PageSet<? extends StorageMetadata> list(String s, ListContainerOptions listContainerOptions) {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public boolean blobExists(String s, String s2) {
-      return false;
+      throw new UnsupportedOperationException();
    }
 
    @Override
@@ -103,24 +103,21 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    @Override
    public String putBlob(String container, Blob blob, PutOptions options) {
-      if(options.isMultipart()) {
-         //sync.initiateMultipartUpload(container)
-      }
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public BlobMetadata blobMetadata(String s, String s2) {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public Blob getBlob(String s, String s2, GetOptions getOptions) {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public void removeBlob(String s, String s2) {
-
+      throw new UnsupportedOperationException();
    }
 }
