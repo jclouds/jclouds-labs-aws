@@ -28,10 +28,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class GlacierBlobStoreContextModule extends AbstractModule{
+public class GlacierBlobStoreContextModule extends AbstractModule {
    @Override
    protected void configure() {
-      bind(ConsistencyModel.class).toInstance(ConsistencyModel.STRICT);
+      bind(ConsistencyModel.class).toInstance(ConsistencyModel.EVENTUAL);
       bind(BlobStore.class).to(GlacierBlobStore.class);
       bind(AsyncBlobStore.class).to(GlacierAsyncBlobStore.class);
    }

@@ -94,12 +94,13 @@ public class GlacierAsyncBlobStore extends BaseAsyncBlobStore {
    }
 
    @Override
-   public ListenableFuture<PageSet<? extends StorageMetadata>> list(String s, ListContainerOptions listContainerOptions) {
+   public ListenableFuture<PageSet<? extends StorageMetadata>> list(String container,
+                                                                    ListContainerOptions listContainerOptions) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public ListenableFuture<Boolean> blobExists(String s, String s2) {
+   public ListenableFuture<Boolean> blobExists(String container, String key) {
       throw new UnsupportedOperationException();
    }
 
@@ -114,12 +115,12 @@ public class GlacierAsyncBlobStore extends BaseAsyncBlobStore {
    }
 
    @Override
-   public ListenableFuture<BlobMetadata> blobMetadata(String s, String s2) {
+   public ListenableFuture<BlobMetadata> blobMetadata(String container, String key) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public ListenableFuture<Blob> getBlob(String s, String s2, GetOptions getOptions) {
+   public ListenableFuture<Blob> getBlob(String container, String key, GetOptions getOptions) {
       throw new UnsupportedOperationException();
    }
 

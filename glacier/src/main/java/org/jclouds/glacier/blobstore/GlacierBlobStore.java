@@ -85,12 +85,12 @@ public class GlacierBlobStore extends BaseBlobStore {
    }
 
    @Override
-   public PageSet<? extends StorageMetadata> list(String s, ListContainerOptions listContainerOptions) {
+   public PageSet<? extends StorageMetadata> list(String container, ListContainerOptions listContainerOptions) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public boolean blobExists(String s, String s2) {
+   public boolean blobExists(String container, String key) {
       throw new UnsupportedOperationException();
    }
 
@@ -105,17 +105,17 @@ public class GlacierBlobStore extends BaseBlobStore {
    }
 
    @Override
-   public BlobMetadata blobMetadata(String s, String s2) {
+   public BlobMetadata blobMetadata(String container, String key) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public Blob getBlob(String s, String s2, GetOptions getOptions) {
+   public Blob getBlob(String container, String key, GetOptions getOptions) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public void removeBlob(String s, String s2) {
+   public void removeBlob(String container, String key) {
       throw new UnsupportedOperationException();
    }
 }
