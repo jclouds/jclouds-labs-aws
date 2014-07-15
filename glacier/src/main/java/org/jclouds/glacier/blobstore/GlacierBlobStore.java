@@ -35,7 +35,6 @@ import org.jclouds.collect.Memoized;
 import org.jclouds.crypto.Crypto;
 import org.jclouds.domain.Location;
 import org.jclouds.glacier.GlacierClient;
-import org.jclouds.glacier.domain.ArchiveMetadataCollection;
 import org.jclouds.javax.annotation.Nullable;
 
 import com.google.common.base.Supplier;
@@ -45,13 +44,13 @@ import com.google.inject.Inject;
 public class GlacierBlobStore extends BaseBlobStore {
    private final GlacierClient sync;
    private final Crypto crypto;
-   private final Cache<String, ArchiveMetadataCollection> inventoryCache;
+   private final Cache<String, String> inventoryCache;
    private final Cache<String, String> archiveCache;
 
    @Inject
    GlacierBlobStore(BlobStoreContext context, BlobUtils blobUtils, Supplier<Location> defaultLocation,
                     @Memoized Supplier<Set<? extends Location>> locations, GlacierClient sync, Crypto crypto,
-                    Cache<String, ArchiveMetadataCollection> inventoryCache, Cache<String, String> archiveCache) {
+                    Cache<String, String> inventoryCache, Cache<String, String> archiveCache) {
       super(context, blobUtils, defaultLocation, locations);
       this.sync = checkNotNull(sync, "sync");
       this.crypto = checkNotNull(crypto, "crypto");

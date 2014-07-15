@@ -21,7 +21,6 @@ import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.attr.ConsistencyModel;
 import org.jclouds.glacier.blobstore.GlacierAsyncBlobStore;
 import org.jclouds.glacier.blobstore.GlacierBlobStore;
-import org.jclouds.glacier.domain.ArchiveMetadataCollection;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -39,13 +38,7 @@ public class GlacierBlobStoreContextModule extends AbstractModule{
 
    @Provides
    @Singleton
-   protected Cache<String, ArchiveMetadataCollection> inventoryCache() {
-      return CacheBuilder.newBuilder().build();
-   }
-
-   @Provides
-   @Singleton
-   protected Cache<String, String> archiveCache() {
+   protected Cache<String, String> jobCache() {
       return CacheBuilder.newBuilder().build();
    }
 }
