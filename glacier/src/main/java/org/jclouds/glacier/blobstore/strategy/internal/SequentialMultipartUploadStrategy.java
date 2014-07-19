@@ -45,7 +45,7 @@ public class SequentialMultipartUploadStrategy implements MultipartUploadStrateg
             blob.getMetadata().getName());
       try {
          ImmutableMap.Builder<Integer, HashCode> hashes = ImmutableMap.builder();
-         while  (slicer.hasNext()) {
+         while (slicer.hasNext()) {
             PayloadSlice slice = slicer.nextSlice();
             hashes.put(slice.getPart(),
                   client.uploadPart(container, uploadId, slice.getRange(), slice.getPayload()));

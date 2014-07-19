@@ -16,6 +16,7 @@
  */
 package org.jclouds.glacier.blobstore.strategy;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.jclouds.glacier.util.ContentRange;
@@ -29,6 +30,7 @@ public class PayloadSlice {
    public PayloadSlice(Payload payload, ContentRange range, int part) {
       this.payload = checkNotNull(payload, "payload");
       this.range = checkNotNull(range, "range");
+      checkArgument(part >= 0, "The part number cannot be negative");
       this.part = part;
    }
 

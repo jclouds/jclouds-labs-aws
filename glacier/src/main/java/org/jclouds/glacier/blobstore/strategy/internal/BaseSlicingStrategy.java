@@ -17,9 +17,6 @@
 package org.jclouds.glacier.blobstore.strategy.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.Math.floor;
-import static java.lang.Math.log;
-import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import org.jclouds.glacier.blobstore.strategy.PayloadSlice;
@@ -29,10 +26,15 @@ import org.jclouds.io.Payload;
 import org.jclouds.io.PayloadSlicer;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class BaseSlicingStrategy implements SlicingStrategy {
 
    public static final double DEFAULT_RATIO = 0.32; // (part size/number of parts) ratio
+
+   @Inject(optional = true)
+   @Named("jclouds.mpu.part.ratio")
+   private final double ratio = DEFAULT_RATIO;
 
    private final PayloadSlicer slicer;
    private Payload payload;
@@ -50,11 +52,10 @@ public class BaseSlicingStrategy implements SlicingStrategy {
       this.part = 0;
    }
 
-   //TODO: Inject custom ratio
    protected long calculatePartSize(long length) {
       long lengthInMB = (long) (length / (1L << 20)) + 1;
-      double fpPartSizeInMB = sqrt(DEFAULT_RATIO * lengthInMB); //Get the part size which matches the given ratio
-      long partSizeInMB = (long) pow(2, floor(log(fpPartSizeInMB) / log(2)) + 1); //Get the next power of 2
+      double fpPartSizeInMB = sqrt(ratio * lengthInMB); //Get the part size which matches the given ratio
+      long partSizeInMB = Long.highestOneBit((long) fpPartSizeInMB - 1) << 1;
       if (partSizeInMB < 1) return 1;
       else if (partSizeInMB > MAX_PART_SIZE) return MAX_PART_SIZE;
       return partSizeInMB;
@@ -76,7 +77,7 @@ public class BaseSlicingStrategy implements SlicingStrategy {
    @Override
    public PayloadSlice nextSlice() {
       checkNotNull(this.payload, "payload");
-      long sliceLength = getRemaining() < (partSizeInMB << 20) ? getRemaining() : partSizeInMB << 20;
+      long sliceLength = Math.min(getRemaining(), partSizeInMB << 20);
       Payload slicedPayload = slicer.slice(payload, copied, sliceLength);
       ContentRange range = ContentRange.build(copied, copied + sliceLength - 1);
       copied += sliceLength;
