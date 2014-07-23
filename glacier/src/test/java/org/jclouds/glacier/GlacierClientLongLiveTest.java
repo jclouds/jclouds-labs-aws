@@ -17,12 +17,13 @@
 package org.jclouds.glacier;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.guava.api.Assertions.assertThat;
 import static org.jclouds.glacier.util.TestUtils.MiB;
 import static org.jclouds.glacier.util.TestUtils.buildData;
 import static org.jclouds.glacier.util.TestUtils.buildPayload;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import org.jclouds.apis.BaseApiLiveTest;
 import org.jclouds.glacier.domain.ArchiveRetrievalJobRequest;
@@ -31,7 +32,6 @@ import org.jclouds.glacier.domain.JobMetadata;
 import org.jclouds.glacier.domain.JobStatus;
 import org.jclouds.glacier.domain.VaultMetadata;
 import org.jclouds.glacier.util.ContentRange;
-import org.jclouds.io.ByteSources;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -43,8 +43,8 @@ import com.google.common.hash.HashCode;
 public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
 
    private static final long PART_SIZE = 1;
-   private static final long INITIAL_WAIT = 10800000L; //3 hours
-   private static final long TIME_BETWEEN_POLLS = 900000L; //15 minutes
+   private static final long INITIAL_WAIT = TimeUnit.HOURS.toMillis(3);
+   private static final long TIME_BETWEEN_POLLS = TimeUnit.MINUTES.toMillis(15);
    private static final String VAULT_NAME = "JCLOUDS_LIVE_TESTS";
    private static final String ARCHIVE_DESCRIPTION = "test archive";
 
@@ -122,8 +122,17 @@ public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
 
    @Test(groups = {"live", "livelong", "longtest"}, dependsOnMethods = {"testWaitForSucceed"})
    public void testGetJobOutput() throws IOException {
-      assertThat(ByteSources.asByteSource(api.getJobOutput(VAULT_NAME, archiveRetrievalJob).openStream()))
-            .hasSameContentAs(buildData(PART_SIZE * 2 * MiB));
+      InputStream inputStream = api.getJobOutput(VAULT_NAME, archiveRetrievalJob).openStream();
+      try {
+         InputStream expectedInputStream = buildData(PART_SIZE * 2 * MiB).openStream();
+         try {
+            assertThat(inputStream).hasContentEqualTo(expectedInputStream);
+         } finally {
+            expectedInputStream.close();
+         }
+      } finally {
+         inputStream.close();
+      }
    }
 
    @Test(groups = {"live", "livelong", "longtest"}, dependsOnMethods = {"testWaitForSucceed"})
