@@ -18,9 +18,6 @@ package org.jclouds.glacier.util;
 
 import static com.google.common.net.MediaType.PLAIN_TEXT_UTF_8;
 
-import java.util.Arrays;
-
-import org.jclouds.io.ByteSources;
 import org.jclouds.io.Payload;
 import org.jclouds.io.payloads.ByteSourcePayload;
 
@@ -40,8 +37,6 @@ public class TestUtils {
    }
 
    public static ByteSource buildData(long size) {
-      byte[] array = new byte[1024];
-      Arrays.fill(array, (byte) 'a');
-      return ByteSources.repeatingArrayByteSource(array).slice(0, size);
+      return org.jclouds.utils.TestUtils.randomByteSource().slice(0, size);
    }
 }
