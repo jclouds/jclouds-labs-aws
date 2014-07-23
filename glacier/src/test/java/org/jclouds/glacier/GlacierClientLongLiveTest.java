@@ -90,7 +90,7 @@ public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
       assertThat(inventoryRetrievalJob).isNotNull();
    }
 
-   @Test(groups= {"live", "livelong", "longtest"}, dependsOnMethods = {"testInitiateJob"})
+   @Test(groups = {"live", "livelong", "longtest"}, dependsOnMethods = {"testInitiateJob"})
    public void testDescribeJob() {
       VaultMetadata vaultMetadata = api.describeVault(VAULT_NAME);
 
@@ -112,7 +112,7 @@ public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
    @Test(groups = {"live", "livelong", "longtest"}, dependsOnMethods = {"testInitiateJob", "testDescribeJob", "testListJobs"})
    public void testWaitForSucceed() throws InterruptedException {
       Thread.sleep(INITIAL_WAIT);
-      while(api.describeJob(VAULT_NAME, archiveRetrievalJob).getStatusCode() == JobStatus.IN_PROGRESS ||
+      while (api.describeJob(VAULT_NAME, archiveRetrievalJob).getStatusCode() == JobStatus.IN_PROGRESS ||
             api.describeJob(VAULT_NAME, inventoryRetrievalJob).getStatusCode() == JobStatus.IN_PROGRESS) {
          Thread.sleep(TIME_BETWEEN_POLLS);
       }
