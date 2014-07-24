@@ -29,6 +29,6 @@ public class PaginatedVaultCollectionToStorageMetadata implements Function<Pagin
    @Override
    public PageSet<? extends StorageMetadata> apply(PaginatedVaultCollection vaults) {
       return new PageSetImpl<StorageMetadata>(Iterables.transform(vaults, new VaultMetadataToStorageMetadata()),
-            vaults.nextMarker().isPresent() ? (String) vaults.nextMarker().get() : null);
+            (String) vaults.nextMarker().orNull());
    }
 }
