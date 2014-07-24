@@ -76,7 +76,7 @@ public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
             buildPayload(PART_SIZE * MiB)));
       hashes.put(1, api.uploadPart(VAULT_NAME, uploadId, ContentRange.fromPartNumber(1, PART_SIZE),
             buildPayload(PART_SIZE * MiB)));
-      archiveId = api.completeMultipartUpload(VAULT_NAME, uploadId, hashes.build(), PART_SIZE * 2);
+      archiveId = api.completeMultipartUpload(VAULT_NAME, uploadId, hashes.build(), PART_SIZE * 2 * MiB);
       assertThat(archiveId).isNotNull();
    }
 
