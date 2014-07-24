@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
+import com.google.common.io.Closer;
 
 /**
  * Long live test for Glacier.
@@ -122,16 +123,13 @@ public class GlacierClientLongLiveTest extends BaseApiLiveTest<GlacierClient>{
 
    @Test(groups = {"live", "livelong", "longtest"}, dependsOnMethods = {"testWaitForSucceed"})
    public void testGetJobOutput() throws IOException {
-      InputStream inputStream = api.getJobOutput(VAULT_NAME, archiveRetrievalJob).openStream();
+      Closer closer = Closer.create();
       try {
-         InputStream expectedInputStream = buildData(PART_SIZE * 2 * MiB).openStream();
-         try {
-            assertThat(inputStream).hasContentEqualTo(expectedInputStream);
-         } finally {
-            expectedInputStream.close();
-         }
+         InputStream inputStream = closer.register(api.getJobOutput(VAULT_NAME, archiveRetrievalJob).openStream());
+         InputStream expectedInputStream = closer.register(buildData(PART_SIZE * 2 * MiB).openStream());
+         assertThat(inputStream).hasContentEqualTo(expectedInputStream);
       } finally {
-         inputStream.close();
+         closer.close();
       }
    }
 
