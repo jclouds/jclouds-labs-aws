@@ -41,16 +41,18 @@ public class ClearVaultStrategy implements ClearListStrategy {
 
    @Override
    public void execute(String container, ListContainerOptions listContainerOptions) {
-      String jobId = sync.initiateJob(container, InventoryRetrievalJobRequest.builder().build());
-      try {
-         if (pollingStrategy.waitForSuccess(container, jobId)) {
-            ArchiveMetadataCollection archives = sync.getInventoryRetrievalOutput(container, jobId);
-            for(ArchiveMetadata archive : archives) {
-               sync.deleteArchive(container, archive.getArchiveId());
+      if (!sync.deleteVault(container)) {
+         String jobId = sync.initiateJob(container, InventoryRetrievalJobRequest.builder().build());
+         try {
+            if (pollingStrategy.waitForSuccess(container, jobId)) {
+               ArchiveMetadataCollection archives = sync.getInventoryRetrievalOutput(container, jobId);
+               for (ArchiveMetadata archive : archives) {
+                  sync.deleteArchive(container, archive.getArchiveId());
+               }
             }
+         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
          }
-      } catch (InterruptedException e) {
-         throw new RuntimeException(e);
       }
    }
 }
