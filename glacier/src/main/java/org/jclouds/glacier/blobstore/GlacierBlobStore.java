@@ -91,7 +91,7 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    /**
     * Deletes the container and all its blobs.
-    * Inventories will be retrieved until the container is gone. Since Inventories need 24 hours to be updated this
+    * Inventories will be retrieved until the container is gone. Since inventories need 24 hours to be updated this
     * operation may take days.
     *
     * @param container
@@ -179,7 +179,7 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    /**
     * Lists the blobs in the container.
-    * An Inventory will be retrieved to obtain the list. Note that this will take hours and the result may be
+    * An inventory will be retrieved to obtain the list. Note that this will take hours and the result may be
     * inaccurate (Inventories are updated every 24 hours).
     *
     * @param container
