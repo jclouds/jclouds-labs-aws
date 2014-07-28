@@ -24,6 +24,7 @@ import org.jclouds.glacier.GlacierClient;
 import org.jclouds.glacier.domain.ArchiveMetadata;
 import org.jclouds.glacier.domain.ArchiveMetadataCollection;
 import org.jclouds.glacier.domain.InventoryRetrievalJobRequest;
+import org.jclouds.rest.ResourceNotFoundException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -46,7 +47,10 @@ public class ClearVaultStrategy implements ClearListStrategy {
          if (pollingStrategy.waitForSuccess(container, jobId)) {
             ArchiveMetadataCollection archives = sync.getInventoryRetrievalOutput(container, jobId);
             for(ArchiveMetadata archive : archives) {
-               sync.deleteArchive(container, archive.getArchiveId());
+               try {
+                  sync.deleteArchive(container, archive.getArchiveId());
+               } catch (ResourceNotFoundException ignored) {
+               }
             }
          }
       } catch (InterruptedException e) {
