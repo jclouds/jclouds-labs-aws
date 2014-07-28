@@ -62,7 +62,7 @@ public class GlacierBlobStore extends BaseBlobStore {
    public static final long DEFAULT_INVENTORY_UPDATE_TIME = TimeUnit.HOURS.toMillis(24);
 
    @Inject(optional = true)
-   @Named("jclouds.inventory.update.time")
+   @Named("jclouds.glacier.inventory.update.time")
    private final long inventoryUpdateTime = DEFAULT_INVENTORY_UPDATE_TIME;
 
    private final GlacierClient sync;
