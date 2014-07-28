@@ -92,7 +92,7 @@ public class GlacierBlobStore extends BaseBlobStore {
 
    @Override
    public void deleteContainer(String container) {
-      if(!sync.deleteVault(container)) {
+      if (!sync.deleteVault(container)) {
          deletePathAndEnsureGone(container);
       }
    }

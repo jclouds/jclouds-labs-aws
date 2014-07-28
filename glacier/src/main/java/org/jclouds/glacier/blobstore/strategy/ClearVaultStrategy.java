@@ -46,7 +46,7 @@ public class ClearVaultStrategy implements ClearListStrategy {
       try {
          if (pollingStrategy.waitForSuccess(container, jobId)) {
             ArchiveMetadataCollection archives = sync.getInventoryRetrievalOutput(container, jobId);
-            for(ArchiveMetadata archive : archives) {
+            for (ArchiveMetadata archive : archives) {
                try {
                   sync.deleteArchive(container, archive.getArchiveId());
                } catch (ResourceNotFoundException ignored) {
