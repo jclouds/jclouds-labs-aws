@@ -31,8 +31,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Implementation of ClearListStrategy.
- * This is a long duration operation.
+ * An inventory will be retrieved to obtain the blob list and the method will iterate through it deleting the blobs.
+ * This operation will take several hours and the result may be inaccurate (Inventories are updated every 24 hours).
  */
 @Singleton
 public class ClearVaultStrategy implements ClearListStrategy {
