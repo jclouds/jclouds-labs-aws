@@ -221,7 +221,7 @@ public class GlacierBlobStore extends BaseBlobStore {
    }
 
    /**
-    * Stores a blob in a container.
+    * Stores a blob in a container. The blob name will be ignored, since it's not supported by Glacier.
     *
     * @param container
     *          container name
