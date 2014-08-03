@@ -36,19 +36,19 @@ public class BasePollingStrategy implements PollingStrategy {
    public static final long DEFAULT_INITIAL_WAIT = TimeUnit.HOURS.toMillis(3);
    public static final long DEFAULT_TIME_BETWEEN_POLLS = TimeUnit.MINUTES.toMillis(15);
 
+   private final GlacierClient client;
    private final long initialWait;
    private final long timeBetweenPolls;
-   private final GlacierClient client;
 
-   public BasePollingStrategy(long initialWait, long timeBetweenPolls, GlacierClient client) {
+   public BasePollingStrategy(GlacierClient client, long initialWait, long timeBetweenPolls) {
+      this.client = checkNotNull(client, "client");
       this.initialWait = initialWait;
       this.timeBetweenPolls = timeBetweenPolls;
-      this.client = checkNotNull(client, "client");
    }
 
    @Inject
    public BasePollingStrategy(GlacierClient client) {
-      this(DEFAULT_INITIAL_WAIT, DEFAULT_TIME_BETWEEN_POLLS, client);
+      this(client, DEFAULT_INITIAL_WAIT, DEFAULT_TIME_BETWEEN_POLLS);
    }
 
    private boolean inProgress(String job, String vault) {

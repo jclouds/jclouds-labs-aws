@@ -36,7 +36,7 @@ public class ArchiveMetadataCollectionToStorageMetadata implements Function<Arch
       return new PageSetImpl<StorageMetadata>(Iterables.transform(archives, new ArchiveMetadataToBlobMetadata()), null);
    }
 
-   private class ArchiveMetadataToBlobMetadata implements Function<ArchiveMetadata, MutableBlobMetadata> {
+   private static class ArchiveMetadataToBlobMetadata implements Function<ArchiveMetadata, MutableBlobMetadata> {
       @Override
       public MutableBlobMetadata apply(ArchiveMetadata from) {
          MutableContentMetadata contentMetadata = new BaseMutableContentMetadata();
