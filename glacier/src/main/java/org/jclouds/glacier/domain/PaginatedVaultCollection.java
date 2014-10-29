@@ -16,44 +16,44 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Iterator;
 
 import org.jclouds.collect.IterableWithMarker;
 import org.jclouds.glacier.options.PaginationOptions;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Paginated collection used to store Vault listing information.
  */
-public class PaginatedVaultCollection extends IterableWithMarker<VaultMetadata> {
+@AutoValue
+public abstract class PaginatedVaultCollection extends IterableWithMarker<VaultMetadata> {
 
-   @SerializedName("VaultList")
-   private final Iterable<VaultMetadata> vaults;
-   @SerializedName("Marker")
-   private final String marker;
+   public abstract Iterable<VaultMetadata> getVaults();
 
-   @ConstructorProperties({ "VaultList", "Marker" })
-   public PaginatedVaultCollection(Iterable<VaultMetadata> vaults, String marker) {
-      this.vaults = checkNotNull(vaults, "vaults");
-      this.marker = marker;
-   }
+   @Nullable
+   public abstract String getMarker();
 
    @Override
    public Iterator<VaultMetadata> iterator() {
-      return vaults.iterator();
+      return getVaults().iterator();
    }
 
    @Override
    public Optional<Object> nextMarker() {
-      return Optional.<Object>fromNullable(marker);
+      return Optional.<Object>fromNullable(getMarker());
    }
 
    public PaginationOptions nextPaginationOptions() {
       return PaginationOptions.class.cast(nextMarker().get());
    }
+
+   @SerializedNames({"VaultList", "Marker"})
+   public static PaginatedVaultCollection create(Iterable<VaultMetadata> vaults, String marker) {
+      return new AutoValue_PaginatedVaultCollection(vaults, marker);
+   }
+
 }

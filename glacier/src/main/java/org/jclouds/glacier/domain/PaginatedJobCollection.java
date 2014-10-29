@@ -16,43 +16,43 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Iterator;
 
 import org.jclouds.collect.IterableWithMarker;
 import org.jclouds.glacier.options.PaginationOptions;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Paginated collection used to store Job listing information.
  */
-public class PaginatedJobCollection extends IterableWithMarker<JobMetadata> {
-   @SerializedName("JobList")
-   private final Iterable<JobMetadata> jobs;
-   @SerializedName("Marker")
-   private final String marker;
+@AutoValue
+public abstract class PaginatedJobCollection extends IterableWithMarker<JobMetadata> {
 
-   @ConstructorProperties({ "JobList", "Marker" })
-   public PaginatedJobCollection(Iterable<JobMetadata> jobs, String marker) {
-      this.jobs = checkNotNull(jobs, "jobs");
-      this.marker = marker;
-   }
+   public abstract Iterable<JobMetadata> getJobs();
+
+   @Nullable
+   public abstract String getMarker();
 
    @Override
    public Iterator<JobMetadata> iterator() {
-      return jobs.iterator();
+      return getJobs().iterator();
    }
 
    @Override
    public Optional<Object> nextMarker() {
-      return Optional.<Object>fromNullable(marker);
+      return Optional.<Object>fromNullable(getMarker());
    }
 
    public PaginationOptions nextPaginationOptions() {
       return PaginationOptions.class.cast(nextMarker().get());
+   }
+
+   @SerializedNames({"JobList", "Marker"})
+   public static PaginatedJobCollection create(Iterable<JobMetadata> jobs, String marker) {
+      return new AutoValue_PaginatedJobCollection(jobs, marker);
    }
 }
