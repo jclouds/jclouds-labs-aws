@@ -21,33 +21,25 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.beans.ConstructorProperties;
 
 import org.jclouds.glacier.util.ContentRange;
+import org.jclouds.json.SerializedNames;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.hash.HashCode;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Defines the attributes needed for a multipart upload part.
  */
-public class PartMetadata {
+@AutoValue
+public abstract class PartMetadata {
 
-   @SerializedName("SHA256TreeHash")
-   private final HashCode treeHash;
-   @SerializedName("RangeInBytes")
-   private final ContentRange range;
+   public abstract ContentRange getRange();
 
-   @ConstructorProperties({ "SHA256TreeHash", "RangeInBytes" })
-   public PartMetadata(String treeHash, String range) {
-      super();
-      this.treeHash = HashCode.fromString(checkNotNull(treeHash, "treeHash"));
-      this.range = ContentRange.fromString(checkNotNull(range, "range"));
-   }
+   public abstract HashCode getTreeHash();
 
-   public ContentRange getRange() {
-      return range;
-   }
-
-   public HashCode getTreeHash() {
-      return treeHash;
+   @SerializedNames({ "SHA256TreeHash", "RangeInBytes" })
+   public static PartMetadata create(String treeHash, String range) {
+      return new AutoValue_PartMetadata(ContentRange.fromString(range), HashCode.fromString(treeHash));
    }
 
 }
