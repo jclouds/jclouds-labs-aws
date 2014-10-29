@@ -16,101 +16,33 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Date;
 
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.ComparisonChain;
-import com.google.gson.annotations.SerializedName;
+import com.google.auto.value.AutoValue;
 
 /**
  * Defines the attributes needed to describe a vault.
  */
-public class VaultMetadata implements Comparable<VaultMetadata> {
+@AutoValue
+public abstract class VaultMetadata {
+   public abstract String getVaultName();
 
-   @SerializedName("VaultName")
-   private final String vaultName;
-   @SerializedName("VaultARN")
-   private final String vaultARN;
-   @SerializedName("CreationDate")
-   private final Date creationDate;
-   @SerializedName("LastInventoryDate")
-   private final Date lastInventoryDate;
-   @SerializedName("NumberOfArchives")
-   private final long numberOfArchives;
-   @SerializedName("SizeInBytes")
-   private final long sizeInBytes;
+   public abstract String getVaultARN();
 
-   @ConstructorProperties({ "VaultName", "VaultARN", "CreationDate", "LastInventoryDate", "NumberOfArchives",
-         "SizeInBytes" })
-   public VaultMetadata(String vaultName, String vaultARN, Date creationDate, @Nullable Date lastInventoryDate,
-         long numberOfArchives, long sizeInBytes) {
-      this.vaultName = checkNotNull(vaultName, "vaultName");
-      this.vaultARN = checkNotNull(vaultARN, "vaultARN");
-      this.creationDate = (Date) checkNotNull(creationDate, "creationDate").clone();
-      this.lastInventoryDate = lastInventoryDate;
-      this.numberOfArchives = numberOfArchives;
-      this.sizeInBytes = sizeInBytes;
-   }
+   public abstract Date getCreationDate();
 
-   public String getVaultName() {
-      return vaultName;
-   }
+   @Nullable public abstract Date getLastInventoryDate();
 
-   public String getVaultARN() {
-      return vaultARN;
-   }
+   public abstract long getNumberOfArchives();
 
-   public Date getCreationDate() {
-      return (Date) creationDate.clone();
-   }
+   public abstract long getSizeInBytes();
 
-   public Date getLastInventoryDate() {
-      return lastInventoryDate;
-   }
-
-   public long getNumberOfArchives() {
-      return numberOfArchives;
-   }
-
-   public long getSizeInBytes() {
-      return sizeInBytes;
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(this.vaultName, this.vaultARN, this.creationDate, this.lastInventoryDate,
-            this.numberOfArchives, this.sizeInBytes);
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      VaultMetadata other = (VaultMetadata) obj;
-
-      return Objects.equal(this.vaultName, other.vaultName) && Objects.equal(this.vaultARN, other.vaultARN)
-            && Objects.equal(this.creationDate, other.creationDate)
-            && Objects.equal(this.lastInventoryDate, other.lastInventoryDate)
-            && Objects.equal(this.numberOfArchives, other.numberOfArchives)
-            && Objects.equal(this.sizeInBytes, other.sizeInBytes);
-   }
-
-   @Override
-   public String toString() {
-      return "VaultMetadata [vaultName=" + vaultName + ", vaultARN=" + vaultARN + ", creationDate=" + creationDate
-            + ", lastInventoryDate=" + lastInventoryDate + ", numberOfArchives=" + numberOfArchives + ", sizeInBytes="
-            + sizeInBytes + "]";
-   }
-
-   @Override
-   public int compareTo(VaultMetadata o) {
-      return ComparisonChain.start().compare(this.vaultName, o.getVaultName()).result();
+   @SerializedNames({ "VaultName", "VaultARN", "CreationDate", "LastInventoryDate", "NumberOfArchives", "SizeInBytes"})
+   public static VaultMetadata create(String vaultName, String vaultARN, Date creationDate, Date lastInventoryDate,
+                                      long numberOfArchives, long sizeInBytes) {
+      return new AutoValue_VaultMetadata(vaultName, vaultARN, creationDate, lastInventoryDate, numberOfArchives, sizeInBytes);
    }
 }
