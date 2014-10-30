@@ -18,6 +18,7 @@ package org.jclouds.glacier.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.util.Closeables2.closeQuietly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,7 +123,7 @@ public final class TreeHash {
          //The result list contains exactly one element now.
          return new TreeHash(hashList(list.build()), linearHis.hash());
       } finally {
-         Closeables.closeQuietly(is);
+         closeQuietly(is);
       }
    }
 
