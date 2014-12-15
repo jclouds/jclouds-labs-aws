@@ -16,64 +16,30 @@
  */
 package org.jclouds.glacier.domain;
 
-import java.beans.ConstructorProperties;
-
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import com.google.common.base.Objects;
+import com.google.auto.value.AutoValue;
 
 /**
  * Defines attributes to describe a GlacierError
  */
-public class GlacierError {
+@AutoValue
+public abstract class GlacierError {
 
-   private final String code;
-   private final String message;
-   private final String type;
+   @Nullable public abstract String getCode();
 
-   @ConstructorProperties({ "code", "message", "type" })
-   public GlacierError(@Nullable String code, @Nullable String message, @Nullable String type) {
-      this.code = code;
-      this.message = message;
-      this.type = type;
-   }
+   @Nullable public abstract String getMessage();
 
-   public String getCode() {
-      return code;
-   }
-
-   public String getMessage() {
-      return message;
-   }
-
-   public String getType() {
-      return type;
-   }
+   @Nullable public abstract String getType();
 
    public boolean isValid() {
-      return (this.code != null) && (this.message != null) && (this.type != null);
+      return (getCode() != null) && (getMessage() != null) && (getType() != null);
    }
 
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(this.code, this.message, this.type);
+   @SerializedNames({ "code", "message", "type" })
+   public static GlacierError create(String code, String message, String type) {
+      return new AutoValue_GlacierError(code, message, type);
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      GlacierError other = (GlacierError) obj;
-
-      return Objects.equal(this.code, other.code)
-            && Objects.equal(this.message, other.message)
-            && Objects.equal(this.type, other.type);
-   }
-
-   @Override
-   public String toString() {
-      return "GlacierError [code=" + this.getCode() + ", message=" + this.getMessage() + "type=" + this.getType() + "]";
-   }
 }

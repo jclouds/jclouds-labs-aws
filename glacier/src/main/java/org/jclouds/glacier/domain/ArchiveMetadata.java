@@ -16,88 +16,32 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Date;
 
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.ComparisonChain;
+import com.google.auto.value.AutoValue;
 import com.google.common.hash.HashCode;
-import com.google.gson.annotations.SerializedName;
 
-public class ArchiveMetadata implements Comparable<ArchiveMetadata> {
+@AutoValue
+public abstract class ArchiveMetadata {
 
-   @SerializedName("ArchiveId")
-   private final String archiveId;
-   @SerializedName("ArchiveDescription")
-   private final String description;
-   @SerializedName("CreationDate")
-   private final Date creationDate;
-   @SerializedName("Size")
-   private final long size;
-   @SerializedName("SHA256TreeHash")
-   private final HashCode treeHash;
+   public abstract String getArchiveId();
 
-   @ConstructorProperties({ "ArchiveId", "ArchiveDescription", "CreationDate", "Size", "SHA256TreeHash" })
-   public ArchiveMetadata(String archiveId, @Nullable String description, Date creationDate, long size, String hashCode) {
-      this.archiveId = checkNotNull(archiveId, "archiveId");
-      this.description = description;
-      this.creationDate = (Date) checkNotNull(creationDate, "creationDate").clone();
-      this.size = size;
-      this.treeHash = HashCode.fromString(checkNotNull(hashCode, "hashCode"));
+   @Nullable public abstract String getDescription();
+
+   public abstract Date getCreationDate();
+
+   public abstract long getSize();
+
+   public abstract HashCode getTreeHash();
+
+   @SerializedNames({ "ArchiveId", "ArchiveDescription", "CreationDate", "Size", "SHA256TreeHash" })
+   public static ArchiveMetadata create(String archiveId, String description, Date creationDate, long size,
+                                        String hashCode) {
+      return new AutoValue_ArchiveMetadata(archiveId, description, creationDate, size, HashCode.fromString(hashCode));
+
    }
 
-   public String getArchiveId() {
-      return archiveId;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public Date getCreationDate() {
-      return (Date) creationDate.clone();
-   }
-
-   public long getSize() {
-      return size;
-   }
-
-   public HashCode getTreeHash() {
-      return treeHash;
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(this.archiveId, this.description, this.creationDate, this.size, this.treeHash);
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      ArchiveMetadata other = (ArchiveMetadata) obj;
-
-      return Objects.equal(this.archiveId, other.archiveId)
-            && Objects.equal(this.description, other.description)
-            && Objects.equal(this.creationDate, other.creationDate)
-            && Objects.equal(this.treeHash, other.treeHash)
-            && Objects.equal(this.size, other.size);
-   }
-
-   @Override
-   public String toString() {
-      return "ArchiveMetadata [archiveId=" + archiveId + ", description=" + description
-            + ", creationDate=" + creationDate + ", treeHash=" + treeHash + ", size=" + size + "]";
-   }
-
-   @Override
-   public int compareTo(ArchiveMetadata o) {
-      return ComparisonChain.start().compare(this.archiveId, o.archiveId).result();
-   }
 }

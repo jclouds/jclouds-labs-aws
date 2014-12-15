@@ -16,45 +16,43 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Iterator;
 
 import org.jclouds.collect.IterableWithMarker;
 import org.jclouds.glacier.options.PaginationOptions;
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Paginated collection used to store multipart upload lists.
  */
-public class PaginatedMultipartUploadCollection extends IterableWithMarker<MultipartUploadMetadata> {
+@AutoValue
+public abstract class PaginatedMultipartUploadCollection extends IterableWithMarker<MultipartUploadMetadata> {
 
-   @SerializedName("UploadsList")
-   private final Iterable<MultipartUploadMetadata> uploads;
-   @SerializedName("Marker")
-   private final String marker;
+   public abstract Iterable<MultipartUploadMetadata> getUploads();
 
-   @ConstructorProperties({ "UploadsList", "Marker" })
-   public PaginatedMultipartUploadCollection(Iterable<MultipartUploadMetadata> uploads, @Nullable String marker) {
-      this.uploads = checkNotNull(uploads, "uploads");
-      this.marker = marker;
-   }
+   @Nullable
+   public abstract String getMarker();
 
    @Override
    public Iterator<MultipartUploadMetadata> iterator() {
-      return uploads.iterator();
+      return getUploads().iterator();
    }
 
    @Override
    public Optional<Object> nextMarker() {
-      return Optional.<Object>fromNullable(marker);
+      return Optional.<Object>fromNullable(getMarker());
    }
 
    public PaginationOptions nextPaginationOptions() {
       return PaginationOptions.class.cast(nextMarker().get());
+   }
+
+   @SerializedNames({"UploadsList", "Marker"})
+   public static PaginatedMultipartUploadCollection create(Iterable<MultipartUploadMetadata> uploads, String marker) {
+      return new AutoValue_PaginatedMultipartUploadCollection(uploads, marker);
    }
 }

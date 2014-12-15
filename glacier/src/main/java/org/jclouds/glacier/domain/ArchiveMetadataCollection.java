@@ -16,42 +16,31 @@
  */
 package org.jclouds.glacier.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.jclouds.json.SerializedNames;
+
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.FluentIterable;
-import com.google.gson.annotations.SerializedName;
 
+@AutoValue
+public abstract class ArchiveMetadataCollection extends FluentIterable<ArchiveMetadata>{
 
-public class ArchiveMetadataCollection extends FluentIterable<ArchiveMetadata>{
+   public abstract Iterable<ArchiveMetadata> getArchives();
 
-   @SerializedName("ArchiveList")
-   private final Iterable<ArchiveMetadata> archives;
-   @SerializedName("VaultARN")
-   private final String vaultARN;
-   @SerializedName("InventoryDate")
-   private final Date inventoryDate;
+   public abstract String getVaultARN();
 
-   @ConstructorProperties({ "ArchiveList", "VaultARN", "InventoryDate" })
-   public ArchiveMetadataCollection(Iterable<ArchiveMetadata> archives, String vaultARN, Date inventoryDate) {
-      this.archives = checkNotNull(archives, "archives");
-      this.vaultARN = checkNotNull(vaultARN, "vaultARN");
-      this.inventoryDate = (Date) checkNotNull(inventoryDate, "inventoryDate").clone();
-   }
+   public abstract Date getInventoryDate();
 
    @Override
    public Iterator<ArchiveMetadata> iterator() {
-      return archives.iterator();
+      return getArchives().iterator();
    }
 
-   public String getVaultARN() {
-      return vaultARN;
+   @SerializedNames({ "ArchiveList", "VaultARN", "InventoryDate" })
+   public static ArchiveMetadataCollection create(Iterable<ArchiveMetadata> archives, String vaultARN, Date inventoryDate) {
+      return new AutoValue_ArchiveMetadataCollection(archives, vaultARN, inventoryDate);
    }
 
-   public Date getInventoryDate() {
-      return (Date) inventoryDate.clone();
-   }
 }
